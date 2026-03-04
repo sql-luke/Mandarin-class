@@ -55,7 +55,6 @@
             padding: 0 20px;
         }
 
-        /* 卡片共用樣式 */
         .card {
             background-color: var(--card-bg);
             border-radius: 15px;
@@ -68,7 +67,6 @@
         h2 { color: var(--primary-color); border-bottom: 3px dashed var(--primary-color); padding-bottom: 10px; margin-top:0; }
         h3 { color: var(--secondary-color); }
 
-        /* 按鈕風格 */
         .btn {
             background-color: var(--secondary-color);
             color: white;
@@ -83,10 +81,23 @@
             display: inline-block;
         }
         .btn:hover { transform: scale(1.05); background-color: #E6951C; }
-        .btn.playing { background-color: #E91E63; }
         .btn-success { background-color: var(--primary-color); }
         .btn-success:hover { background-color: #388E3C; }
         .btn-danger { background-color: #F44336; }
+
+        .btn-read-q {
+            background-color: #E8F8F5;
+            color: #2CA75E;
+            border: 2px solid #2ECC71;
+            border-radius: 20px;
+            padding: 6px 15px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-read-q:hover { background-color: #2ECC71; color: white; }
+        .btn-read-q.playing { background-color: #E91E63; border-color: #E91E63; color: white; }
 
         /* 2. 互動微課程區 */
         .keyword {
@@ -138,7 +149,7 @@
         }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 
-        /* 3. 單元總結隨堂挑戰 (根據圖片重新設計) */
+        /* 3. 單元總結隨堂挑戰 */
         .quiz-header-row {
             display: flex;
             justify-content: space-between;
@@ -185,31 +196,9 @@
             font-size: 20px;
             color: #333;
         }
-        .question-title-row h4 .q-num {
-            color: var(--blue-accent);
-            font-weight: bold;
-        }
+        .question-title-row h4 .q-num { color: var(--blue-accent); font-weight: bold; }
 
-        .btn-read-q {
-            background-color: #E8F8F5;
-            color: #2CA75E;
-            border: 2px solid #2ECC71;
-            border-radius: 20px;
-            padding: 6px 15px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-read-q:hover { background-color: #2ECC71; color: white; }
-        .btn-read-q.playing { background-color: #E91E63; border-color: #E91E63; color: white; }
-
-        /* 2x2 選項網格 */
-        .options-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 15px; 
-        }
+        .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .option-label {
             background-color: #FAFAFA;
             border: 2px solid #EEEEEE;
@@ -225,47 +214,27 @@
         }
         .option-label:hover { background-color: #F0F8FF; border-color: var(--blue-accent); }
         
-        /* 客製化圓圈 Radio */
         input[type="radio"] { display: none; }
         .radio-circle {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #999;
-            border-radius: 50%;
-            margin-right: 15px;
-            display: inline-block;
-            position: relative;
-            flex-shrink: 0;
+            width: 20px; height: 20px; border: 2px solid #999; border-radius: 50%;
+            margin-right: 15px; display: inline-block; position: relative; flex-shrink: 0;
         }
         input[type="radio"]:checked + .option-label {
-            background-color: #F0F8FF;
-            border-color: var(--blue-accent);
-            color: var(--blue-accent);
+            background-color: #F0F8FF; border-color: var(--blue-accent); color: var(--blue-accent);
         }
-        input[type="radio"]:checked + .option-label .radio-circle {
-            border-color: var(--blue-accent);
-        }
+        input[type="radio"]:checked + .option-label .radio-circle { border-color: var(--blue-accent); }
         input[type="radio"]:checked + .option-label .radio-circle::after {
-            content: '';
-            width: 10px;
-            height: 10px;
-            background-color: var(--blue-accent);
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            content: ''; width: 10px; height: 10px; background-color: var(--blue-accent);
+            border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
         }
 
         .feedback { margin-top: 20px; padding: 15px; border-radius: 8px; display: none; font-weight: bold; font-size: 18px; }
         .feedback.correct { background-color: #C8E6C9; color: #2E7D32; display: block; }
         .feedback.wrong { background-color: #FFCDD2; color: #C62828; display: block; }
 
-        /* 4. 專屬錯題區 */
         #mistakes-area { background-color: #FFF3E0; border: 2px solid #FFE0B2; }
         .mistake-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* 手機版響應式 (選項變回單排) */
         @media (max-width: 600px) {
             .options-grid { grid-template-columns: 1fr; }
             .quiz-header-row { flex-direction: column; gap: 15px; align-items: flex-start; }
@@ -316,17 +285,13 @@
     </div>
 
     <script>
-        /* ================= MVC 架構：資料庫 ================= */
+        /* ================= MVC 架構：資料庫 (一～三課完整內容) ================= */
         const knowledgeBase = {
             grade3_term2: {
                 unit1: {
                     title: "第一課 最美的模樣",
                     sections: [
-                        {
-                            type: "video",
-                            title: "📺 課前小預習",
-                            videoId: "BQX0mTcFaEg" // 已修復為「菁英中文學校」真實的教學影片 ID
-                        },
+                        { type: "video", title: "📺 課前小預習", videoId: "BQX0mTcFaEg" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -346,8 +311,7 @@
                                 { idiom: "生機盎然", explanation: "形容充滿生氣和活力的樣子。", usage: "春天到了，花園裡生機盎然，開滿了美麗的花朵。" },
                                 { idiom: "迎風搖曳", explanation: "形容在風中輕輕搖晃的樣子。", usage: "草原上的小花迎風搖曳，像是在跟我們招手。" },
                                 { idiom: "截長補短", explanation: "吸取別人的長處，來彌補自己的短處。", usage: "我們在團隊合作中要懂得截長補短，才能發揮最大的力量。" },
-                                { idiom: "充滿自信", explanation: "對自己非常有信心。", usage: "他充滿自信地走上舞台，準備開始他的演講。" },
-                                { idiom: "各有所長", explanation: "每個人或每種事物都有各自的長處或優點。", usage: "小明擅長畫畫，小華擅長跑步，真是各有所長。" }
+                                { idiom: "充滿自信", explanation: "對自己非常有信心。", usage: "他充滿自信地走上舞台，準備開始他的演講。" }
                             ]
                         },
                         {
@@ -379,6 +343,116 @@
                         { id: "u1_q19", q: "「雖然...卻...」是什麼句型？", options: ["假設句", "轉折句", "條件句", "並列句"], ans: 2, exp: "這是一個轉折句，表示前後語氣發生轉變。" },
                         { id: "u1_q20", q: "「大自然中，每種植物都有自己獨一無二的姿態。」這句話想表達什麼？", options: ["萬物皆有其獨特性", "植物比動物好", "植物長得很奇怪", "大自然很危險"], ans: 1, exp: "這句話強調每一種植物，進而推廣到每個人，都有自己獨特的存在價值。" }
                     ]
+                },
+                unit2: {
+                    title: "第二課 玩玩具",
+                    sections: [
+                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" }, // 替換為實際南一國語三下第二課影片ID
+                        {
+                            type: "textBlocks",
+                            title: "📖 課文精華",
+                            paragraphs: [
+                                "房間裡，玩具們靜靜地等待。積木可以堆成高高的<span class=\"keyword\">城堡</span>，小汽車可以在想像的街道上<span class=\"keyword\">奔馳</span>。",
+                                "玩玩具不只是打發時間，更是發揮<span class=\"keyword\">想像力</span>的快樂時刻。有時候，和好朋友一起分享玩具，可以創造出更多有趣的玩法。",
+                                "在遊戲中，我們學會輪流和等待，也學會了互相合作。",
+                                "當然，玩完之後，也要記得發揮<span class=\"keyword\">愛心</span>和責任感，把它們整齊地收回玩具箱，讓玩具也能好好休息。"
+                            ]
+                        },
+                        {
+                            type: "idiomList",
+                            title: "📚 成語小學堂",
+                            list: [
+                                { idiom: "愛不釋手", explanation: "喜歡得捨不得放手。", usage: "弟弟對新買的玩具汽車愛不釋手，連睡覺都要抱著。" },
+                                { idiom: "異想天開", explanation: "想法非常奇特，不切實際。這裡可引申為想像力豐富。", usage: "小明異想天開，想用積木搭一座通往月亮的橋。" },
+                                { idiom: "同心協力", explanation: "團結一致，共同努力。", usage: "我們同心協力，終於完成了這個巨大的拼圖。" },
+                                { idiom: "井然有序", explanation: "整齊而有條理。", usage: "玩完玩具後，大家把它們收拾得井然有序。" },
+                                { idiom: "破涕為笑", explanation: "停止哭泣，轉為笑容。", usage: "聽到好朋友願意分享玩具，原本難過的妹妹立刻破涕為笑。" }
+                            ]
+                        },
+                        {
+                            type: "thinkBox",
+                            title: "🧠 腦力激盪",
+                            question: "想一想，你最喜歡的玩具是什麼？你會怎麼和朋友一起玩這個玩具呢？",
+                            answer: "（參考解答）我最喜歡的是樂高積木。我會和朋友一起合作，他負責找零件，我負責拼裝，我們常常一起蓋出超酷的太空船！"
+                        }
+                    ],
+                    questions: [
+                        { id: "u2_q1", q: "課文中提到，積木可以堆成什麼？", options: ["高高的城堡", "好吃的蛋糕", "長長的火車", "一本書"], ans: 1, exp: "課文第一段寫到：積木可以堆成高高的城堡。" },
+                        { id: "u2_q2", q: "玩玩具除了打發時間，更是發揮什麼的時刻？", options: ["體力", "想像力", "脾氣", "食量"], ans: 2, exp: "課文提到玩玩具是發揮想像力的快樂時刻。" },
+                        { id: "u2_q3", q: "和好朋友分享玩具，會有什麼好處？", options: ["玩具會壞掉", "玩具會變多", "可以創造出更多有趣的玩法", "別人會把玩具搶走"], ans: 3, exp: "課文說和好朋友分享，可以創造出更多有趣的玩法。" },
+                        { id: "u2_q4", q: "在遊戲中，我們能學會什麼精神？", options: ["自私", "互相合作", "偷懶", "生氣"], ans: 2, exp: "課文中提到在遊戲中我們學會輪流、等待和互相合作。" },
+                        { id: "u2_q5", q: "玩完玩具後，表現出負責任的做法是？", options: ["直接跑去看電視", "把它們整齊收回玩具箱", "叫媽媽幫忙收", "丟在地上"], ans: 2, exp: "課文教導我們要整齊地把玩具收好。" },
+                        { id: "u2_q6", q: "「奔馳」的意思是什麼？", options: ["慢慢走路", "快速地跑", "停在原地", "在水裡游泳"], ans: 2, exp: "奔馳形容車子或馬匹快速地奔跑。" },
+                        { id: "u2_q7", q: "選出字形正確的選項：城「ㄅㄠˇ」", options: ["保", "寶", "堡", "飽"], ans: 3, exp: "正確的字是城「堡」。" },
+                        { id: "u2_q8", q: "選出字音正確的選項：「奔」馳", options: ["ㄅㄣ", "ㄅㄣˋ", "ㄆㄣ", "ㄆㄣˋ"], ans: 1, exp: "奔的注音是一聲 ㄅㄣ。" },
+                        { id: "u2_q9", q: "哪一個成語適合形容「非常喜歡一個東西，捨不得放下」？", options: ["同心協力", "破涕為笑", "愛不釋手", "井然有序"], ans: 3, exp: "愛不釋手形容喜歡得捨不得放手。" },
+                        { id: "u2_q10", q: "「大家一起努力完成一件事情」可以用哪個成語形容？", options: ["異想天開", "同心協力", "愛不釋手", "破涕為笑"], ans: 2, exp: "同心協力指團結一致，共同努力。" },
+                        { id: "u2_q11", q: "「整齊」的相反詞是什麼？", options: ["乾淨", "凌亂", "漂亮", "井然有序"], ans: 2, exp: "整齊的相反詞是凌亂。" },
+                        { id: "u2_q12", q: "課文說要讓玩具「好好休息」，這使用了什麼寫作修辭？", options: ["擬人", "譬喻", "排比", "誇飾"], ans: 1, exp: "把玩具當作人一樣會「休息」，是擬人法。" },
+                        { id: "u2_q13", q: "下列哪個詞語是動詞？", options: ["城堡", "玩具", "奔馳", "房間"], ans: 3, exp: "奔馳表示動作，是動詞。" },
+                        { id: "u2_q14", q: "下列哪一個字的部首和「玩」一樣？", options: ["王", "元", "玉", "木"], ans: 3, exp: "「玩」的部首是玉部。" },
+                        { id: "u2_q15", q: "如果朋友不小心弄壞了你的玩具，你覺得怎樣處理比較好？", options: ["大聲罵他", "把他打一頓", "原諒他並請他下次小心", "弄壞他的玩具"], ans: 3, exp: "互相包容和原諒才是好朋友的表現。" },
+                        { id: "u2_q16", q: "「異想天開」通常用來形容什麼樣的想法？", options: ["很普通", "很無聊", "奇特而不切實際", "大家都知道的"], ans: 3, exp: "異想天開形容想法非常奇特。" },
+                        { id: "u2_q17", q: "「不但...還...」這個句型表示什麼意思？", options: ["只有一個條件", "遞進關係，有更深一層的意思", "兩個選一個", "完全相反"], ans: 2, exp: "這是一個遞進句型，表示後面比前面更進一層。" },
+                        { id: "u2_q18", q: "下列字音何者錯誤？", options: ["「輪」流：ㄌㄨㄣˊ", "「責」任：ㄗㄜˊ", "「整」齊：ㄓㄥˇ", "「待」在房間：ㄉㄞˋ"], ans: 4, exp: "待在房間的待應唸作 ㄉㄞ。" },
+                        { id: "u2_q19", q: "妹妹本來在哭，看到媽媽買的玩具後，立刻「___」。空格應填入？", options: ["同心協力", "破涕為笑", "井然有序", "愛不釋手"], ans: 2, exp: "破涕為笑形容停止哭泣轉為笑容。" },
+                        { id: "u2_q20", q: "這篇課文主要告訴我們玩玩具時應該注意什麼？", options: ["只要好玩就好", "要一個人玩", "發揮想像力，學會分享與負責", "不要玩太久"], ans: 3, exp: "課文強調了想像力、合作分享以及收拾的責任心。" }
+                    ]
+                },
+                unit3: {
+                    title: "第三課 愛玉的變身術",
+                    sections: [
+                        { type: "video", title: "📺 課前小預習", videoId: "NEUa55AH6zk" }, 
+                        {
+                            type: "textBlocks",
+                            title: "📖 課文精華",
+                            paragraphs: [
+                                "夏天吃一碗冰涼的愛玉，真是消暑。你知道愛玉是怎麼來的嗎？它不是從樹上直接長出來的果凍，而是由<span class=\"keyword\">愛玉子</span>洗出來的。",
+                                "將乾燥的愛玉子裝進布袋，放進冷開水裡輕輕<span class=\"keyword\">搓揉</span>。不久，水會慢慢變得<span class=\"keyword\">黏稠</span>。",
+                                "靜靜等待一段時間，它就會施展神奇的<span class=\"keyword\">變身術</span>，漸漸<span class=\"keyword\">凝固</span>成晶瑩剔透的愛玉凍了！",
+                                "加入檸檬汁和糖水，酸酸甜甜的滋味，是大自然給我們最棒的禮物。"
+                            ]
+                        },
+                        {
+                            type: "idiomList",
+                            title: "📚 成語小學堂",
+                            list: [
+                                { idiom: "晶瑩剔透", explanation: "光亮透明的樣子。", usage: "這碗剛洗好的愛玉，看起來晶瑩剔透，真好吃。" },
+                                { idiom: "千變萬化", explanation: "形容變化非常多。", usage: "天上的雲朵千變萬化，有時像小狗，有時像大樹。" },
+                                { idiom: "大開眼界", explanation: "看到很多新奇的事物，增加見識。", usage: "這次去自然科學博物館，真是讓我大開眼界。" },
+                                { idiom: "迫不及待", explanation: "急迫得不能再等待。", usage: "一聽到下課鐘聲，大家就迫不及待地衝向操場。" },
+                                { idiom: "垂涎三尺", explanation: "形容非常嘴饞想吃。也比喻非常羨慕。", usage: "看到桌上美味的炸雞，我不禁垂涎三尺。" }
+                            ]
+                        },
+                        {
+                            type: "thinkBox",
+                            title: "🧠 腦力激盪",
+                            question: "你有看過大人「洗愛玉」嗎？或者你有吃過其他也是大自然植物做成的點心嗎（例如：仙草、粉粿）？",
+                            answer: "（參考解答）我有看過奶奶洗愛玉！奶奶在水裡搓揉布袋，水真的會變色、變黏。除了愛玉，我也很喜歡吃黑黑滑滑的仙草，夏天吃最棒了！"
+                        }
+                    ],
+                    questions: [
+                        { id: "u3_q1", q: "愛玉是怎麼來的？", options: ["樹上直接長出來的", "用愛玉子在水裡搓揉出來的", "從土裡挖出來的", "去海邊撈的"], ans: 2, exp: "課文提到愛玉是由愛玉子在水裡搓揉出來的。" },
+                        { id: "u3_q2", q: "洗愛玉的時候，要把愛玉子裝進什麼裡面？", options: ["塑膠袋", "玻璃瓶", "布袋", "紙盒"], ans: 3, exp: "課文寫到：將乾燥的愛玉子裝進布袋裡。" },
+                        { id: "u3_q3", q: "在水裡輕輕搓揉愛玉子，水會發生什麼變化？", options: ["變得很清澈", "變得熱熱的", "慢慢變得黏稠", "變成紅色"], ans: 3, exp: "經過搓揉，水會慢慢變得黏稠。" },
+                        { id: "u3_q4", q: "愛玉凍通常會加入什麼一起吃，味道最好？", options: ["醬油和醋", "檸檬汁和糖水", "鹽巴和胡椒", "辣椒醬"], ans: 2, exp: "課文提到加入檸檬汁和糖水，會有酸酸甜甜的滋味。" },
+                        { id: "u3_q5", q: "「凝固」的意思是什麼？", options: ["從固體變成液體", "從液體變成固體", "變成氣體", "融化掉"], ans: 2, exp: "凝固是指液體變成固體的過程，像愛玉水變成愛玉凍。" },
+                        { id: "u3_q6", q: "「晶瑩剔透」最適合用來形容下面哪一個東西？", options: ["黑色的石頭", "透明乾淨的玻璃珠", "厚厚的外套", "木頭桌子"], ans: 2, exp: "晶瑩剔透形容光亮透明，適合形容玻璃珠或愛玉。" },
+                        { id: "u3_q7", q: "選出字音正確的選項：搓「揉」", options: ["ㄖㄡˊ", "ㄖㄡˋ", "ㄌㄡˊ", "ㄌㄡˋ"], ans: 1, exp: "揉的注音是 ㄖㄡˊ。" },
+                        { id: "u3_q8", q: "選出字形正確的選項：黏「ㄔㄡˊ」", options: ["愁", "仇", "稠", "酬"], ans: 3, exp: "正確的字是黏「稠」。" },
+                        { id: "u3_q9", q: "哪一個成語形容「非常想吃東西，口水都要流下來了」？", options: ["晶瑩剔透", "大開眼界", "迫不及待", "垂涎三尺"], ans: 4, exp: "垂涎三尺形容非常嘴饞想吃的樣子。" },
+                        { id: "u3_q10", q: "「消暑」的意思是？", options: ["消除暑氣，覺得涼快", "夏天變得很熱", "去度假", "吃很多東西"], ans: 1, exp: "消暑就是解除炎熱的感覺。" },
+                        { id: "u3_q11", q: "洗愛玉時，應該要用熱水還是冷開水？", options: ["熱水", "溫水", "冷開水", "果汁"], ans: 3, exp: "課文提到要放進「冷開水」裡輕輕搓揉。" },
+                        { id: "u3_q12", q: "愛玉水變身成愛玉凍，還需要什麼條件？", options: ["一直搖晃", "靜靜等待一段時間", "放在太陽底下曬", "加很多鹽"], ans: 2, exp: "課文寫到：靜靜等待一段時間，它就會凝固。" },
+                        { id: "u3_q13", q: "下列哪個詞語是形容詞？", options: ["愛玉", "夏天", "晶瑩剔透", "搓揉"], ans: 3, exp: "晶瑩剔透是形容詞，用來修飾愛玉的狀態。" },
+                        { id: "u3_q14", q: "「迫不及待」可以用在什麼情境？", options: ["肚子很痛", "期待很久的旅行終於要出發了", "覺得很無聊", "考試考不好"], ans: 2, exp: "迫不及待形容急迫得不能再等待，通常用於期待的事情。" },
+                        { id: "u3_q15", q: "作者說愛玉是誰給我們最棒的禮物？", options: ["農夫", "超商", "大自然", "老師"], ans: 3, exp: "課文結尾提到，是大自然給我們最棒的禮物。" },
+                        { id: "u3_q16", q: "「千變萬化」的相反詞比較接近哪一個？", options: ["變化多端", "一成不變", "日新月異", "五顏六色"], ans: 2, exp: "一成不變指完全沒有改變，與千變萬化相反。" },
+                        { id: "u3_q17", q: "洗愛玉的動作順序，下列何者正確？", options: ["裝布袋→等待凝固→水裡搓揉", "水裡搓揉→裝布袋→等待凝固", "裝布袋→水裡搓揉→等待凝固", "等待凝固→水裡搓揉→裝布袋"], ans: 3, exp: "順序是先裝袋，再搓揉，最後等待凝固。" },
+                        { id: "u3_q18", q: "下列字音何者錯誤？", options: ["「晶」瑩：ㄐㄧㄥ", "「剔」透：ㄊㄧ", "「消」暑：ㄒㄧㄠ", "酸「甜」：ㄊㄧㄢˇ"], ans: 4, exp: "酸「甜」的注音應為 ㄊㄧㄢˊ (二聲)。" },
+                        { id: "u3_q19", q: "參觀完水族館，看到好多特別的魚，真是讓我「___」。空格應填入？", options: ["大開眼界", "垂涎三尺", "千變萬化", "迫不及待"], ans: 1, exp: "大開眼界指看到新奇事物而增加見識。" },
+                        { id: "u3_q20", q: "這篇課文的主題是關於什麼？", options: ["介紹一種植物的生長", "介紹愛玉凍的製作過程與特色", "教導大家怎麼種樹", "介紹夏天的天氣"], ans: 2, exp: "全文圍繞在介紹愛玉是如何從愛玉子洗出來的過程。" }
+                    ]
                 }
             }
         };
@@ -393,7 +467,7 @@
             if (window.speechSynthesis.speaking) {
                 window.speechSynthesis.cancel();
                 if (btnElement) {
-                    btnElement.innerHTML = btnElement.dataset.originalHtml || "🔊 唸題目";
+                    btnElement.innerHTML = btnElement.dataset.originalHtml || "🔊";
                     btnElement.classList.remove("playing");
                 }
                 return;
@@ -451,18 +525,20 @@
             
             data.sections.forEach((sec, index) => {
                 let cardHtml = `<div class="card ${sec.type === 'thinkBox' ? 'think-box' : ''}">`;
-                cardHtml += `<h3>${sec.title}</h3>`;
+                
+                let contentHtml = "";
                 let textForTTS = "";
                 let isThinkBox = false;
 
+                // 先處理內容與語音文字
                 if (sec.type === "video") {
-                    cardHtml += `<div class="video-container"><iframe src="https://www.youtube.com/embed/${sec.videoId}" frameborder="0" allowfullscreen></iframe></div>`;
+                    contentHtml = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${sec.videoId}" frameborder="0" allowfullscreen></iframe></div>`;
                 } else if (sec.type === "textBlocks") {
-                    sec.paragraphs.forEach(p => { cardHtml += `<p style="font-size: 18px;">${p}</p>`; });
+                    sec.paragraphs.forEach(p => { contentHtml += `<p style="font-size: 18px;">${p}</p>`; });
                     textForTTS = sec.paragraphs.join("。").replace(/<[^>]*>?/gm, ''); 
                 } else if (sec.type === "idiomList") {
                     sec.list.forEach(item => {
-                        cardHtml += `
+                        contentHtml += `
                             <div class="idiom-box">
                                 <strong style="font-size: 18px; color: #E65100;">【${item.idiom}】</strong>
                                 <p style="margin: 5px 0;"><strong>解釋：</strong>${item.explanation}</p>
@@ -472,15 +548,22 @@
                         textForTTS += `${item.idiom}。解釋：${item.explanation}。例句：${item.usage}。`;
                     });
                 } else if (sec.type === "thinkBox") {
-                    cardHtml += `<p style="font-size: 18px; font-weight: bold;">${sec.question}</p>`;
-                    cardHtml += `<div class="answer-reveal">${sec.answer}</div>`;
+                    contentHtml += `<p style="font-size: 18px; font-weight: bold;">${sec.question}</p>`;
+                    contentHtml += `<div class="answer-reveal">${sec.answer}</div>`;
                     textForTTS = `${sec.question}|${sec.answer}`;
                     isThinkBox = true;
                 }
 
-                if (textForTTS) {
-                    cardHtml += `<button class="btn" onclick="speakText('${textForTTS}', this, ${isThinkBox})">🔊 唸課文給我聽</button>`;
-                }
+                // 組合標題列 (按鈕放在這裡)
+                cardHtml += `
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0;">${sec.title}</h3>
+                        ${textForTTS ? `<button class="btn-read-q" onclick="speakText('${textForTTS}', this, ${isThinkBox})">🔊 唸這段</button>` : ''}
+                    </div>
+                `;
+                
+                // 接上內容
+                cardHtml += contentHtml;
                 cardHtml += `</div>`;
                 lessonArea.innerHTML += cardHtml;
             });
@@ -504,7 +587,6 @@
                 
                 const qTextForTTS = `第${actualQNumber}題：${q.q}。選項1：${q.options[0]}。選項2：${q.options[1]}。選項3：${q.options[2]}。選項4：${q.options[3]}`;
                 
-                // 題目標題與按鈕列
                 qHtml += `
                     <div class="question-title-row">
                         <h4><span class="q-num">Q${actualQNumber}:</span> ${q.q}</h4>
@@ -512,7 +594,6 @@
                     </div>
                 `;
                 
-                // 2x2 選項網格
                 qHtml += `<div class="options-grid">`;
                 q.options.forEach((opt, optIndex) => {
                     const optNum = optIndex + 1;
@@ -557,7 +638,7 @@
                 if (!selected) {
                     feedbackDiv.className = "feedback wrong";
                     feedbackDiv.innerText = "⚠️ 你還沒有作答這題喔！";
-                    container.style.borderLeftColor = "#F44336"; // 未作答變紅邊
+                    container.style.borderLeftColor = "#F44336"; 
                     return;
                 }
 
@@ -565,12 +646,12 @@
                 if (userAns === q.ans) {
                     feedbackDiv.className = "feedback correct";
                     feedbackDiv.innerHTML = `✅ 答對了！太棒了！<br>💡 說明：${q.exp}`;
-                    container.style.borderLeftColor = "#4CAF50"; // 答對變綠邊
+                    container.style.borderLeftColor = "#4CAF50"; 
                     mistakes = mistakes.filter(m => m.id !== q.id);
                 } else {
                     feedbackDiv.className = "feedback wrong";
                     feedbackDiv.innerHTML = `❌ 哎呀，答錯了。正確答案是 (${q.ans})<br>💡 說明：${q.exp}`;
-                    container.style.borderLeftColor = "#F44336"; // 答錯變紅邊
+                    container.style.borderLeftColor = "#F44336"; 
                     if (!mistakes.some(m => m.id === q.id)) {
                         mistakes.push(q);
                     }
