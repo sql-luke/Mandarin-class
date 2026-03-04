@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小學國語互動學習網</title>
+    <style>
+        /* ================= 核心排版與遊戲化風格 ================= */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #FF9800;
+            --bg-color: #F3F8F1;
+            --card-bg: #FFFFFF;
+            --text-color: #333333;
+            --highlight-bg: #FFF9C4;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Microsoft JhengHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* 1. 頂部固定導覽列 (Sticky Nav) */
+        nav {
+            position: sticky;
+            top: 0;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        select {
+            padding: 8px 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        /* 卡片共用樣式 */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border: 2px solid #E8F5E9;
+        }
+
+        h2 { color: var(--primary-color); border-bottom: 3px dashed var(--primary-color); padding-bottom: 10px; }
+        h3 { color: var(--secondary-color); }
+
+        /* 按鈕風格 */
+        .btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, background-color 0.2s;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .btn:hover { transform: scale(1.05); background-color: #F57C00; }
+        .btn.playing { background-color: #E91E63; } /* 語音播放中變色 */
+        .btn-success { background-color: var(--primary-color); }
+        .btn-success:hover { background-color: #388E3C; }
+        .btn-danger { background-color: #F44336; }
+
+        /* 2. 互動微課程區 */
+        .keyword {
+            background-color: var(--highlight-bg);
+            font-weight: bold;
+            padding: 2px 5px;
+            border-radius: 5px;
+            border-bottom: 2px solid #FFC107;
+        }
+
+        /* 腦力激盪 Hover-reveal */
+        .think-box { background-color: #E3F2FD; border: 2px solid #2196F3; }
+        .answer-reveal {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #BBDEFB;
+            border-radius: 10px;
+            color: transparent; /* 預設隱藏文字 */
+            transition: color 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        .answer-reveal::before {
+            content: "👀 滑鼠移過來或點擊看解答";
+            position: absolute;
+            color: #1976D2;
+            font-weight: bold;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: opacity 0.3s;
+        }
+        .answer-reveal:hover, .answer-reveal:active { color: #0D47A1; }
+        .answer-reveal:hover::before, .answer-reveal:active::before { opacity: 0; }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+        /* 3. 單元總結隨堂挑戰 */
+        .question-item { border-bottom: 2px dashed #EEEEEE; padding-bottom: 20px; margin-bottom: 20px; }
+        .options-container { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .option-label {
+            background-color: #F5F5F5;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 2px solid transparent;
+            font-size: 18px;
+        }
+        .option-label:hover { background-color: #E0E0E0; }
+        input[type="radio"] { display: none; }
+        input[type="radio"]:checked + .option-label {
+            background-color: #E8F5E9;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+        .feedback { margin-top: 15px; padding: 10px; border-radius: 8px; display: none; font-weight: bold; }
+        .feedback.correct { background-color: #C8E6C9; color: #2E7D32; display: block; }
+        .feedback.wrong { background-color: #FFCDD2; color: #C62828; display: block; }
+
+        /* 4. 專屬錯題區 */
+        #mistakes-area { background-color: #FFF3E0; border: 2px solid #FFE0B2; }
+        .mistake-item { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div style="font-size: 24px; font-weight: bold;">🌟 國小國語互動學習網</div>
+        <div>
+            <select id="gradeSelect">
+                <option value="grade3_term2">三年級下學期 (南一)</option>
+            </select>
+            <select id="unitSelect">
+                </select>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card" style="text-align: center; background-color: #E8F5E9;">
+            <h1 id="unitTitle">載入中...</h1>
+        </div>
+
+        <div id="lessonArea"></div>
+
+        <div class="card">
+            <h2>🏆 單元總結隨堂挑戰</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <p>挑戰看看你學會了多少！(目前題組: <span id="questionSetIndicator">1</span>)</p>
+                <button class="btn" onclick="nextQuestionSet()">🔄 下一組題目</button>
+            </div>
+            <div id="quizArea"></div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-success" style="font-size: 20px; padding: 15px 30px;" onclick="submitAnswers()">📤 送出答案看結果</button>
+            </div>
+        </div>
+
+        <div class="card" id="mistakes-area">
+            <h2>📝 我的專屬錯題區</h2>
+            <p>只要把這裡的題目弄懂，你就超級厲害囉！</p>
+            <div id="mistakesList"></div>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn btn-danger" onclick="clearMistakes()">🗑️ 清空錯題區</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ================= MVC 架構：資料庫 (Model) ================= */
+        const knowledgeBase = {
+            grade3_term2: {
+                unit1: {
+                    title: "第一課 最美的模樣",
+                    sections: [
+                        {
+                            type: "video",
+                            title: "📺 課前小預習",
+                            videoId: "J6yZg9s4v4o" // 預設南一國語相關影片ID (可替換真實ID)
+                        },
+                        {
+                            type: "text",
+                            title: "📖 課文精華",
+                            content: "大自然中，每種植物都有自己<span class=\"keyword\">獨一無二</span>的姿態。小草雖然低矮，卻充滿<span class=\"keyword\">生機</span>；大樹雖然高聳，卻能為人遮蔭。我們每個人也一樣，不需要羨慕別人，只要發揮自己的特長，展現自信的笑容，那就是你<span class=\"keyword\">最美的模樣</span>。"
+                        },
+                        {
+                            type: "idiom",
+                            title: "📚 成語小學堂",
+                            idiom: "獨一無二",
+                            explanation: "沒有相同的，沒有可以相比的。形容非常稀有、特別。",
+                            usage: "每個人都是世界上獨一無二的寶貝，我們應該好好愛惜自己。"
+                        },
+                        {
+                            type: "thinkBox",
+                            title: "🧠 腦力激盪",
+                            question: "想一想，在學校或家裡，你做什麼事情的時候覺得自己「最美、最棒」呢？為什麼？",
+                            answer: "（參考解答）當我用心幫忙媽媽做家事，或是教同學不會的數學題時，看到他們開心的笑容，我就覺得自己好棒！"
+                        }
+                    ],
+                    // 20題題庫
+                    questions: [
+                        { id: "u1_q1", q: "根據課文，什麼才是「最美的模樣」？", options: ["穿最貴的衣服", "考試都考一百分", "發揮特長，展現自信的笑容", "長得比別人高"], ans: 3, exp: "課文中提到，發揮自己的特長並展現自信的笑容，就是最美的模樣。" },
+                        { id: "u1_q2", q: "「獨一無二」的意思是什麼？", options: ["只有一個，沒有第二個可以相比", "大家都長得一樣", "一個人很孤單", "有兩個一模一樣的東西"], ans: 1, exp: "獨一無二代表非常特別，沒有其他可以相比的。" },
+                        { id: "u1_q3", q: "「小草雖然低矮，卻充滿生機」句中的「生機」可以替換成哪一個詞語？", options: ["危機", "活力", "生氣 (發脾氣)", "機會"], ans: 2, exp: "生機在這裡指的是生命力、活力。" },
+                        { id: "u1_q4", q: "作者用什麼來比喻每個人都有不同的優點？", options: ["動物", "天氣", "大自然中的植物", "文具"], ans: 3, exp: "課文舉了小草和大樹的例子來比喻。" },
+                        { id: "u1_q5", q: "哪一種行為展現了「最美的模樣」？", options: ["嘲笑別人", "盡力完成自己的工作", "遇到困難就放棄", "欺負小動物"], ans: 2, exp: "盡力做好自己，發揮特長，就是最美的。" },
+                        { id: "u1_q6", q: "這篇課文主要想告訴我們什麼道理？", options: ["要多種樹", "肯定自我，每個人都有價值", "植物很重要", "要常常照鏡子"], ans: 2, exp: "主旨在於教導我們肯定自己獨特的價值。" },
+                        { id: "u1_q7", q: "選出字音正確的選項：「遮」蔭", options: ["ㄓㄜ", "ㄓㄜˇ", "ㄓㄜˋ", "ㄓㄜˊ"], ans: 1, exp: "「遮」的注音是一聲 ㄓㄜ。" },
+                        { id: "u1_q8", q: "選出字形正確的選項：高「ㄙㄨㄥˇ」", options: ["松", "聳", "頌", "從"], ans: 2, exp: "正確的字是高「聳」。" },
+                        { id: "u1_q9", q: "下列哪一個造句最適合使用「獨一無二」？", options: ["這件衣服大家都有一件，真是獨一無二。", "這幅畫是妹妹親手畫的，對媽媽來說是獨一無二的禮物。", "這兩枝鉛筆長得獨一無二。", "他每天都做獨一無二的事情。"], ans: 2, exp: "獨一無二形容沒有相同的，親手畫的畫符合這個情境。" },
+                        { id: "u1_q10", q: "「羨慕」的相反詞是什麼？", options: ["嫉妒", "渴望", "知足", "貪心"], ans: 3, exp: "羨慕是想得到別人有的，知足則是滿足於自己所擁有的。" },
+                        // 以下為題組2 (11-20)
+                        { id: "u1_q11", q: "「姿態」的意思是什麼？", options: ["態度", "樣貌、姿勢", "心情", "風景"], ans: 2, exp: "姿態指的是身體呈現的樣子或風格。" },
+                        { id: "u1_q12", q: "課文中大樹的特點是什麼？", options: ["充滿生機", "低矮", "能為人遮蔭", "開出美麗的花"], ans: 3, exp: "大樹高聳，能為人遮蔽陽光。" },
+                        { id: "u1_q13", q: "下列哪一個字的部首和「羨」一樣？", options: ["水", "羊", "心", "人"], ans: 2, exp: "「羨」的部首是羊部。" },
+                        { id: "u1_q14", q: "「發揮特長」的意思是？", options: ["把頭髮留長", "展現自己特別擅長的能力", "長得特別高", "特別愛說話"], ans: 2, exp: "特長指的是特別擅長的技能或優點。" },
+                        { id: "u1_q15", q: "下列哪個詞語是名詞？", options: ["羨慕", "低矮", "笑容", "遮蔭"], ans: 3, exp: "笑容是名詞，指臉上帶笑的樣子。" },
+                        { id: "u1_q16", q: "如果同學畫畫比賽得獎，我們應該表現出什麼態度才是「最美的模樣」？", options: ["不理他", "說他畫得很醜", "真誠地替他開心並給予讚美", "把他畫作撕掉"], ans: 3, exp: "欣賞別人也是一種美麗的展現。" },
+                        { id: "u1_q17", q: "「自信」的意思是？", options: ["自己相信自己", "自己寫信", "相信別人", "自以為了不起"], ans: 1, exp: "自信是指對自己的能力有信心。" },
+                        { id: "u1_q18", q: "下列字音何者錯誤？", options: ["「模」樣：ㄇㄛˊ", "「羨」慕：ㄒㄧㄢˋ", "低「矮」：ㄞˇ", "遮「蔭」：ㄧㄣ"], ans: 4, exp: "遮「蔭」的注音應為 ㄧㄣˋ (四聲)。" },
+                        { id: "u1_q19", q: "「雖然...卻...」是什麼句型？", options: ["假設句", "轉折句", "條件句", "並列句"], ans: 2, exp: "這是一個轉折句，表示前後語氣發生轉變。" },
+                        { id: "u1_q20", q: "「大自然中，每種植物都有自己獨一無二的姿態。」這句話想表達什麼？", options: ["萬物皆有其獨特性", "植物比動物好", "植物長得很奇怪", "大自然很危險"], ans: 1, exp: "這句話強調每一種植物，進而推廣到每個人，都有自己獨特的存在價值。" }
+                    ]
+                }
+                // 未來擴充 unit2, unit3...
+            }
+        };
+
+        /* ================= 狀態管理 ================= */
+        let currentGrade = "grade3_term2";
+        let currentUnit = "unit1";
+        let currentQuestionSetIndex = 0; // 0: 1-10題, 1: 11-20題
+        let currentUtterance = null;
+
+        /* ================= TTS 語音朗讀系統 ================= */
+        function speakText(text, btnElement, isThinkBox = false) {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (btnElement) {
+                    btnElement.innerText = btnElement.dataset.originalText || "🔊 唸給我聽";
+                    btnElement.classList.remove("playing");
+                }
+                return;
+            }
+
+            // 過濾邏輯：如果是腦力激盪，不唸出解答
+            let textToRead = text;
+            if (isThinkBox) {
+                textToRead = text.split('|')[0]; // 假設傳入格式為 "題目|解答"
+            }
+
+            const utterance = new SpeechSynthesisUtterance(textToRead);
+            utterance.pitch = 1.0;
+            utterance.rate = 0.9;
+            utterance.lang = 'zh-TW';
+
+            // 尋找沉穩女聲
+            const voices = window.speechSynthesis.getVoices();
+            const femaleVoice = voices.find(v => v.lang.includes('zh') && (v.name.includes('Female') || v.name.toLowerCase().includes('xiaoxiao') || v.name.includes('Google 國語')));
+            if (femaleVoice) utterance.voice = femaleVoice;
+
+            if (btnElement) {
+                btnElement.dataset.originalText = btnElement.innerText;
+                btnElement.innerText = "⏸️ 暫停";
+                btnElement.classList.add("playing");
+                utterance.onend = () => {
+                    btnElement.innerText = btnElement.dataset.originalText;
+                    btnElement.classList.remove("playing");
+                };
+                utterance.onerror = () => {
+                    btnElement.innerText = btnElement.dataset.originalText;
+                    btnElement.classList.remove("playing");
+                };
+            }
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        /* ================= 介面渲染 (Controller/View) ================= */
+        function init() {
+            // 初始化單元下拉選單
+            const unitSelect = document.getElementById("unitSelect");
+            const units = knowledgeBase[currentGrade];
+            unitSelect.innerHTML = "";
+            for (let key in units) {
+                let opt = document.createElement("option");
+                opt.value = key;
+                opt.innerText = units[key].title;
+                unitSelect.appendChild(opt);
+            }
+            
+            unitSelect.addEventListener("change", (e) => {
+                currentUnit = e.target.value;
+                currentQuestionSetIndex = 0;
+                loadContent();
+            });
+
+            loadContent();
+        }
+
+        function loadContent() {
+            const data = knowledgeBase[currentGrade][currentUnit];
+            document.getElementById("unitTitle").innerText = data.title;
+            
+            // 渲染微課程
+            const lessonArea = document.getElementById("lessonArea");
+            lessonArea.innerHTML = "";
+            
+            data.sections.forEach((sec, index) => {
+                let cardHtml = `<div class="card ${sec.type === 'thinkBox' ? 'think-box' : ''}">`;
+                cardHtml += `<h3>${sec.title}</h3>`;
+                
+                let textForTTS = "";
+                let isThinkBox = false;
+
+                if (sec.type === "video") {
+                    cardHtml += `<div class="video-container"><iframe src="https://www.youtube.com/embed/${sec.videoId}" frameborder="0" allowfullscreen></iframe></div>`;
+                } else if (sec.type === "text") {
+                    cardHtml += `<p id="sec_text_${index}">${sec.content}</p>`;
+                    // 移除 HTML 標籤給 TTS
+                    textForTTS = sec.content.replace(/<[^>]*>?/gm, ''); 
+                } else if (sec.type === "idiom") {
+                    cardHtml += `<p><strong>【${sec.idiom}】</strong></p>`;
+                    cardHtml += `<p>解釋：${sec.explanation}</p>`;
+                    cardHtml += `<p>例句：${sec.usage}</p>`;
+                    textForTTS = `${sec.idiom}。解釋：${sec.explanation}。例句：${sec.usage}`;
+                } else if (sec.type === "thinkBox") {
+                    cardHtml += `<p>${sec.question}</p>`;
+                    cardHtml += `<div class="answer-reveal">${sec.answer}</div>`;
+                    textForTTS = `${sec.question}|${sec.answer}`;
+                    isThinkBox = true;
+                }
+
+                if (textForTTS) {
+                    cardHtml += `<button class="btn" onclick="speakText('${textForTTS}', this, ${isThinkBox})">🔊 唸課文給我聽</button>`;
+                }
+                cardHtml += `</div>`;
+                lessonArea.innerHTML += cardHtml;
+            });
+
+            renderQuestions();
+            renderMistakes();
+        }
+
+        function renderQuestions() {
+            const data = knowledgeBase[currentGrade][currentUnit];
+            const quizArea = document.getElementById("quizArea");
+            quizArea.innerHTML = "";
+            
+            document.getElementById("questionSetIndicator").innerText = currentQuestionSetIndex + 1;
+
+            // 切割 10 題一組
+            const startIndex = currentQuestionSetIndex * 10;
+            const currentQuestions = data.questions.slice(startIndex, startIndex + 10);
+
+            currentQuestions.forEach((q, index) => {
+                const actualQNumber = startIndex + index + 1;
+                let qHtml = `<div class="question-item" id="q_container_${q.id}">`;
+                
+                // 題目文字與朗讀
+                const qTextForTTS = `第${actualQNumber}題：${q.q}。選項1：${q.options[0]}。選項2：${q.options[1]}。選項3：${q.options[2]}。選項4：${q.options[3]}`;
+                qHtml += `<h4>Q${actualQNumber}: ${q.q} <button class="btn" style="font-size:12px; padding:5px 10px;" onclick="speakText('${qTextForTTS}', this)">🔊 唸題目</button></h4>`;
+                
+                // 選項 (規定使用 1, 2, 3, 4)
+                qHtml += `<div class="options-container">`;
+                q.options.forEach((opt, optIndex) => {
+                    const optNum = optIndex + 1;
+                    qHtml += `
+                        <label>
+                            <input type="radio" name="ans_${q.id}" value="${optNum}">
+                            <div class="option-label">(${optNum}) ${opt}</div>
+                        </label>
+                    `;
+                });
+                qHtml += `</div>`;
+                
+                // 回饋區塊 (預設隱藏)
+                qHtml += `<div class="feedback" id="feedback_${q.id}"></div>`;
+                qHtml += `</div>`;
+                
+                quizArea.innerHTML += qHtml;
+            });
+        }
+
+        function nextQuestionSet() {
+            if (confirm("確定要切換到下一組題目嗎？\n(還沒送出的答案將會重置喔！)")) {
+                currentQuestionSetIndex = currentQuestionSetIndex === 0 ? 1 : 0;
+                renderQuestions();
+            }
+        }
+
+        /* ================= 測驗與錯題邏輯 ================= */
+        function submitAnswers() {
+            const data = knowledgeBase[currentGrade][currentUnit];
+            const startIndex = currentQuestionSetIndex * 10;
+            const currentQuestions = data.questions.slice(startIndex, startIndex + 10);
+            
+            let mistakeStorageKey = `mistakes_${currentGrade}_${currentUnit}`;
+            let mistakes = JSON.parse(localStorage.getItem(mistakeStorageKey)) || [];
+
+            currentQuestions.forEach(q => {
+                const selected = document.querySelector(`input[name="ans_${q.id}"]:checked`);
+                const feedbackDiv = document.getElementById(`feedback_${q.id}`);
+                
+                if (!selected) {
+                    feedbackDiv.className = "feedback wrong";
+                    feedbackDiv.innerText = "⚠️ 你還沒有作答這題喔！";
+                    return;
+                }
+
+                const userAns = parseInt(selected.value);
+                if (userAns === q.ans) {
+                    feedbackDiv.className = "feedback correct";
+                    feedbackDiv.innerHTML = `✅ 答對了！太棒了！<br>💡 說明：${q.exp}`;
+                    
+                    // 從錯題本移除 (如果之前有錯過)
+                    mistakes = mistakes.filter(m => m.id !== q.id);
+                } else {
+                    feedbackDiv.className = "feedback wrong";
+                    feedbackDiv.innerHTML = `❌ 哎呀，答錯了。正確答案是 (${q.ans})<br>💡 說明：${q.exp}`;
+                    
+                    // 防重複寫入錯題本
+                    if (!mistakes.some(m => m.id === q.id)) {
+                        mistakes.push(q);
+                    }
+                }
+            });
+
+            localStorage.setItem(mistakeStorageKey, JSON.stringify(mistakes));
+            renderMistakes();
+            
+            // 滾動到最上方看結果
+            document.getElementById("quizArea").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderMistakes() {
+            const mistakeStorageKey = `mistakes_${currentGrade}_${currentUnit}`;
+            let mistakes = JSON.parse(localStorage.getItem(mistakeStorageKey)) || [];
+            const mistakesList = document.getElementById("mistakesList");
+            
+            if (mistakes.length === 0) {
+                mistakesList.innerHTML = "<p style='color: #4CAF50; font-weight: bold;'>🎉 太棒了！目前這個單元沒有錯題喔！繼續保持！</p>";
+                return;
+            }
+
+            mistakesList.innerHTML = "";
+            mistakes.forEach(q => {
+                const qTextForTTS = `${q.q}。正確答案是：選項${q.ans}，${q.options[q.ans-1]}。說明：${q.exp}`;
+                
+                let mHtml = `<div class="mistake-item" id="mistake_${q.id}">`;
+                mHtml += `<p><strong>題目：</strong>${q.q}</p>`;
+                mHtml += `<p style="color: #D32F2F;"><strong>正確答案：(${q.ans}) ${q.options[q.ans-1]}</strong></p>`;
+                mHtml += `<p style="color: #1976D2;"><strong>💡 說明：</strong>${q.exp}</p>`;
+                mHtml += `
+                    <button class="btn" onclick="speakText('${qTextForTTS}', this)">🔊 唸這題</button>
+                    <button class="btn btn-success" onclick="removeMistake('${q.id}')">✅ 我已經學會了</button>
+                `;
+                mHtml += `</div>`;
+                mistakesList.innerHTML += mHtml;
+            });
+        }
+
+        function removeMistake(questionId) {
+            const mistakeStorageKey = `mistakes_${currentGrade}_${currentUnit}`;
+            let mistakes = JSON.parse(localStorage.getItem(mistakeStorageKey)) || [];
+            mistakes = mistakes.filter(m => m.id !== questionId);
+            localStorage.setItem(mistakeStorageKey, JSON.stringify(mistakes));
+            
+            // 加上淡出動畫效果後移除
+            const item = document.getElementById(`mistake_${questionId}`);
+            item.style.transition = "opacity 0.3s";
+            item.style.opacity = "0";
+            setTimeout(() => { renderMistakes(); }, 300);
+        }
+
+        function clearMistakes() {
+            if (confirm("🗑️ 確定要清空目前單元的所有錯題嗎？\n清空後就找不回來囉！")) {
+                const mistakeStorageKey = `mistakes_${currentGrade}_${currentUnit}`;
+                localStorage.removeItem(mistakeStorageKey);
+                renderMistakes();
+            }
+        }
+
+        // 啟動程式
+        window.onload = init;
+
+    </script>
+</body>
+</html>
