@@ -268,6 +268,8 @@
             
             <div id="quizArea"></div>
             
+            <div id="scoreDisplay" style="text-align: center; font-size: 24px; font-weight: bold; color: #E65100; margin-top: 20px; display: none; background-color: #FFF3E0; padding: 15px; border-radius: 10px; border: 2px dashed #FFB74D;"></div>
+
             <div style="text-align: center; margin-top: 30px; border-top: 2px dashed #DDD; padding-top: 20px;">
                 <button class="btn btn-success" style="font-size: 20px; padding: 15px 40px;" onclick="submitAnswers()">📤 送出答案看結果</button>
                 <button class="btn" style="background-color: #9E9E9E; margin-left: 10px;" onclick="nextQuestionSet()">🔄 下一組題目</button>
@@ -275,17 +277,17 @@
         </div>
 
         <div class="card" id="mistakes-area">
-            <h2>📝 我的專屬錯題區</h2>
-            <p>只要把這裡的題目弄懂，你就超級厲害囉！</p>
-            <div id="mistakesList"></div>
-            <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-danger" onclick="clearMistakes()">🗑️ 清空錯題區</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 3px dashed var(--primary-color); padding-bottom: 10px; margin-bottom: 15px;">
+                <h2 style="border: none; padding: 0; margin: 0;">📝 我的專屬錯題區</h2>
+                <button class="btn btn-danger" style="margin: 0; padding: 8px 15px; font-size: 14px;" onclick="clearMistakes()">🗑️ 清空錯題區</button>
             </div>
+            <p style="margin-top: 0;">只要把這裡的題目弄懂，你就超級厲害囉！</p>
+            <div id="mistakesList"></div>
         </div>
     </div>
 
     <script>
-        /* ================= MVC 架構：資料庫 (一～三課完整內容) ================= */
+        /* ================= MVC 架構：資料庫 (一～十二課完整內容) ================= */
         const knowledgeBase = {
             grade3_term2: {
                 unit1: {
@@ -347,7 +349,7 @@
                 unit2: {
                     title: "第二課 玩玩具",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" }, // 替換為實際南一國語三下第二課影片ID
+                        { type: "video", title: "📺 課前小預習", videoId: "QlrvLhrb5z8" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -402,7 +404,7 @@
                 unit3: {
                     title: "第三課 愛玉的變身術",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "NEUa55AH6zk" }, 
+                        { type: "video", title: "📺 課前小預習", videoId: "aXOkSTGhLf4" }, 
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -453,11 +455,11 @@
                         { id: "u3_q19", q: "參觀完水族館，看到好多特別的魚，真是讓我「___」。空格應填入？", options: ["大開眼界", "垂涎三尺", "千變萬化", "迫不及待"], ans: 1, exp: "大開眼界指看到新奇事物而增加見識。" },
                         { id: "u3_q20", q: "這篇課文的主題是關於什麼？", options: ["介紹一種植物的生長", "介紹愛玉凍的製作過程與特色", "教導大家怎麼種樹", "介紹夏天的天氣"], ans: 2, exp: "全文圍繞在介紹愛玉是如何從愛玉子洗出來的過程。" }
                     ]
-                },                        
+                },
                 unit4: {
                     title: "第四課 楊修猜字",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" }, // 之後可替換為實際影片ID
+                        { type: "video", title: "📺 課前小預習", videoId: "iQYqT1hnXWc" }, 
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -512,7 +514,7 @@
                 unit5: {
                     title: "第五課 唱反調",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "JLt5FS-_tHc" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -567,7 +569,7 @@
                 unit6: {
                     title: "第六課 一飛沖天",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "gKq-aCKu99Q" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -622,7 +624,7 @@
                 unit7: {
                     title: "第七課 井仔腳鹽田",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "K7qIw9sUyy4" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -677,7 +679,7 @@
                 unit8: {
                     title: "第八課 和魚一起游泳",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "_cnBUGS3xq4" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -732,7 +734,7 @@
                 unit9: {
                     title: "第九課 三峽老街樂藍染",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "wLP-pPl3L-I" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -787,7 +789,7 @@
                 unit10: {
                     title: "第十課 地球的眼淚",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "oPi_TCsQ5YY" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -842,7 +844,7 @@
                 unit11: {
                     title: "第十一課 枯木是大飯店",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "UbNe6evdr4A" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -889,7 +891,7 @@
                         { id: "u11_q15", q: "把枯木說成是大飯店，這是運用了什麼修辭技巧？", options: ["譬喻", "誇飾", "排比", "疑問"], ans: 1, exp: "用熟悉的大飯店來比喻枯木提供住宿和食物的功能，是譬喻法。" },
                         { id: "u11_q16", q: "下列哪一個字的部首和「枯」一樣？", options: ["古", "木", "十", "口"], ans: 2, exp: "「枯」是木部。" },
                         { id: "u11_q17", q: "「肥沃」通常用來形容什麼？", options: ["人很胖", "衣服很寬大", "土地有很多養分，適合植物生長", "食物很多"], ans: 3, exp: "肥沃專門用來形容土壤養分充足。" },
-                        { id: "u11_q18", q: "下列字音何者錯誤？", options: ["「枯」木：ㄎㄨ", "「啄」木鳥：ㄓㄨㄛˊ", "「蕈」類：ㄒㄩㄣˋ", "「卵」子：ㄌㄨㄢˇ"], ans: 2, exp: "「啄」的正確注音應為 ㄓㄨㄛ (不捲舌音，但現在教育部多音字標準為 ㄓㄨㄛˊ，這裡設定為錯誤選項可改成 ㄉㄨㄛˋ，為了防呆我們解釋：啄正確應為ㄓㄨㄛˊ，若有疑慮，此題當送分或注意「卵」ㄌㄨㄢˇ皆對)。為了嚴謹，假設選項(2)寫成 ㄉㄨㄛˋ 才是錯的。但依現有選項，我們當作練習題討論。" },
+                        { id: "u11_q18", q: "下列字音何者錯誤？", options: ["「枯」木：ㄎㄨ", "「啄」木鳥：ㄉㄨㄛˋ", "「蕈」類：ㄒㄩㄣˋ", "「卵」子：ㄌㄨㄢˇ"], ans: 2, exp: "「啄」的正確注音應為 ㄓㄨㄛˊ。" },
                         { id: "u11_q19", q: "在森林生態系中，枯木扮演了什麼重要的角色？", options: ["沒有用的垃圾", "阻擋動物走路的障礙物", "提供許多生物食物與棲息地的重要資源", "可以拿來生火"], ans: 3, exp: "枯木是森林生態循環中不可或缺的一環。" },
                         { id: "u11_q20", q: "這篇課文主要想告訴我們什麼道理？", options: ["大飯店很貴", "看起來死去的枯木，其實孕育著無限的生機", "啄木鳥很吵", "獨角仙很可怕"], ans: 2, exp: "透過枯木大飯店的故事，傳達大自然生生不息的生態循環。" }
                     ]
@@ -897,7 +899,7 @@
                 unit12: {
                     title: "第十二課 騎樓",
                     sections: [
-                        { type: "video", title: "📺 課前小預習", videoId: "hTPhD76sz_U" },
+                        { type: "video", title: "📺 課前小預習", videoId: "whz8QhuA4Po" },
                         {
                             type: "textBlocks",
                             title: "📖 課文精華",
@@ -962,7 +964,7 @@
             if (window.speechSynthesis.speaking) {
                 window.speechSynthesis.cancel();
                 if (btnElement) {
-                    btnElement.innerHTML = btnElement.dataset.originalHtml || "🔊";
+                    btnElement.innerHTML = btnElement.dataset.originalHtml || "🔊 唸題目";
                     btnElement.classList.remove("playing");
                 }
                 return;
@@ -1013,6 +1015,9 @@
         }
 
         function loadContent() {
+            // 切換單元時隱藏計分板
+            document.getElementById("scoreDisplay").style.display = "none";
+            
             const data = knowledgeBase[currentGrade][currentUnit];
             document.getElementById("unitTitle").innerText = data.title;
             const lessonArea = document.getElementById("lessonArea");
@@ -1020,12 +1025,10 @@
             
             data.sections.forEach((sec, index) => {
                 let cardHtml = `<div class="card ${sec.type === 'thinkBox' ? 'think-box' : ''}">`;
-                
                 let contentHtml = "";
                 let textForTTS = "";
                 let isThinkBox = false;
 
-                // 先處理內容與語音文字
                 if (sec.type === "video") {
                     contentHtml = `<div class="video-container"><iframe src="https://www.youtube.com/embed/${sec.videoId}" frameborder="0" allowfullscreen></iframe></div>`;
                 } else if (sec.type === "textBlocks") {
@@ -1049,7 +1052,6 @@
                     isThinkBox = true;
                 }
 
-                // 組合標題列 (按鈕放在這裡)
                 cardHtml += `
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
                         <h3 style="margin: 0;">${sec.title}</h3>
@@ -1057,7 +1059,6 @@
                     </div>
                 `;
                 
-                // 接上內容
                 cardHtml += contentHtml;
                 cardHtml += `</div>`;
                 lessonArea.innerHTML += cardHtml;
@@ -1112,6 +1113,8 @@
         function nextQuestionSet() {
             if (confirm("確定要切換到下一組題目嗎？\n(還沒送出的答案將會重置喔！)")) {
                 currentQuestionSetIndex = currentQuestionSetIndex === 0 ? 1 : 0;
+                // 切換下一組題目時隱藏計分板
+                document.getElementById("scoreDisplay").style.display = "none";
                 renderQuestions();
                 document.getElementById("quizArea").scrollIntoView({ behavior: 'smooth' });
             }
@@ -1124,6 +1127,9 @@
             
             let mistakeStorageKey = `mistakes_${currentGrade}_${currentUnit}`;
             let mistakes = JSON.parse(localStorage.getItem(mistakeStorageKey)) || [];
+            
+            // 新增計分變數
+            let correctCount = 0;
 
             currentQuestions.forEach(q => {
                 const selected = document.querySelector(`input[name="ans_${q.id}"]:checked`);
@@ -1139,6 +1145,7 @@
 
                 const userAns = parseInt(selected.value);
                 if (userAns === q.ans) {
+                    correctCount++; // 答對即加 1 分
                     feedbackDiv.className = "feedback correct";
                     feedbackDiv.innerHTML = `✅ 答對了！太棒了！<br>💡 說明：${q.exp}`;
                     container.style.borderLeftColor = "#4CAF50"; 
@@ -1152,6 +1159,12 @@
                     }
                 }
             });
+            
+            // 顯示計分板
+            const scoreDisplay = document.getElementById("scoreDisplay");
+            scoreDisplay.style.display = "block";
+            let scoreText = correctCount === 10 ? "🎉 太神啦！滿分！" : "💪 繼續加油喔！";
+            scoreDisplay.innerHTML = `🎯 本次測驗得分：${correctCount * 10} 分！ (答對 ${correctCount} 題 / 共 10 題) <br><span style="font-size:18px; color:#555;">${scoreText}</span>`;
 
             localStorage.setItem(mistakeStorageKey, JSON.stringify(mistakes));
             renderMistakes();
@@ -1205,6 +1218,3 @@
     </script>
 </body>
 </html>
-
-
-
